@@ -64,7 +64,6 @@ const ProfileScreen = () => {
   ];
   
   const menuItemsApp = [
-    { title: "Desain Saya", icon: "color-palette-outline", route: "/(desaign)/my-designs" },
     { title: "Tentang Aplikasi", icon: "information-circle-outline", route: "/(about)/about" },
   ];
 

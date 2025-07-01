@@ -28,11 +28,11 @@ const AboutScreen = () => {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.content}>
           <Image
-            source={images.logoawal}
+            source={images.logoawall}
             style={styles.logo}
             resizeMode="contain"
           />
-          <Text style={styles.appName}>GumiSaQ</Text>
+          <Text style={styles.appName}>TOKO ROTI</Text>
           <Text style={styles.versionText}>Versi {appVersion}</Text>
 
           <View style={styles.descriptionContainer}>
@@ -46,7 +46,7 @@ const AboutScreen = () => {
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>
-          Copyright © {currentYear} GumiSaQ. All Rights Reserved.
+          Copyright © {currentYear} TOKOROTI. All Rights Reserved.
         </Text>
       </View>
     </SafeAreaView>
