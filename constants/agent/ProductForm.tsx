@@ -3,15 +3,15 @@ import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  ActivityIndicator,
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { ID } from 'react-native-appwrite';
 import { config, databases, storage } from '../../lib/appwrite';
@@ -24,7 +24,7 @@ interface ProductFormProps {
   mode?: 'create' | 'edit';
 }
 
-const productTypes: Product['type'][] = ["roti", "bolu"];
+const productTypes: Product['type'][] = ["roti", "bolu",];
 
 export const ProductForm = ({ onSuccess, initialData, mode = 'create' }: ProductFormProps) => {
   const [name, setName] = useState(initialData?.name || '');
