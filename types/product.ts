@@ -5,7 +5,7 @@ export interface Product {
   description: string;
   image?: string;
   // Perubahan dari 'category' ke 'type'
-  type: "Baju" | "Celana" | "Tas" | "Sofenir" | "Other";
+  type: "roti" | "bolu" ;
   // Menambahkan atribut untuk relasi galeri
   gallery: string[]; // Ini akan menjadi array dari ID dokumen galeri
   // Menggunakan nama relasi yang benar

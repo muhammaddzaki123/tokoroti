@@ -24,7 +24,7 @@ interface ProductFormProps {
   mode?: 'create' | 'edit';
 }
 
-const productTypes: Product['type'][] = ["Baju", "Celana", "Tas", "Sofenir", "Other"];
+const productTypes: Product['type'][] = ["roti", "bolu"];
 
 export const ProductForm = ({ onSuccess, initialData, mode = 'create' }: ProductFormProps) => {
   const [name, setName] = useState(initialData?.name || '');

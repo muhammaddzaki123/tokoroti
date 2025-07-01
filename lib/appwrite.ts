@@ -18,10 +18,6 @@ export const config = {
   databaseId: process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID,
   storageBucketId: process.env.EXPO_PUBLIC_APPWRITE_STORAGE_BUCKET_ID || 'default',
   collectionId: process.env.EXPO_PUBLIC_APPWRITE_COLLECTION_ID,
-
-  // artikel
-  artikelCollectionId: process.env.EXPO_PUBLIC_APPWRITE_ARTIKEL_COLLECTION_ID,
-
   //toko
   usersProfileCollectionId: process.env.EXPO_PUBLIC_APPWRITE_USERS_PROFILE_COLLECTION_ID,
   galleriesCollectionId: process.env.EXPO_PUBLIC_APPWRITE_GALLERIES_COLLECTION_ID,
@@ -32,7 +28,6 @@ export const config = {
   ordersCollectionId: process.env.EXPO_PUBLIC_APPWRITE_ORDERS_COLLECTION_ID,
   orderItemsCollectionId: process.env.EXPO_PUBLIC_APPWRITE_ORDER_ITEMS_COLLECTION_ID,
 
-  adminCollectionId: process.env.EXPO_PUBLIC_APPWRITE_ADMIN_COLLECTION_ID,
 };
 
 // Inisialisasi Klien Appwrite
@@ -141,6 +136,7 @@ export async function logout() {
     throw new Error("Gagal untuk logout.");
   }
 }
+
 
 // =================================================================
 // FUNGSI PRODUK (PROPERTIES)
@@ -397,6 +393,103 @@ export async function registerAsAgent(userId: string, agentData: { storeName: st
     throw new Error(error.message || "Gagal mendaftar sebagai agen.");
   }
 }
+
+
+
+/**
+ * Mengambil SEMUA item dari keranjang, termasuk kustom dan standar.
+ */
+// export async function getCartItems(userId: string) {
+//   try {
+//     const cartItems = await databases.listDocuments(
+//       config.databaseId!,
+//       config.keranjangCollectionId!,
+//       [Query.equal("userId", userId)]
+//     );
+
+//     const mergedItemsPromises = cartItems.documents.map(async (item) => {
+//       if (item.isCustom) {
+//         // Logika untuk item kustom (sudah benar)
+//         return {
+//           ...item,
+//           product: {
+//             $id: `custom_${item.$id}`,
+//             name: item.customProductName,
+//             image: item.customProductImage,
+//             price: item.customProductPrice,
+//           },
+//         };
+//       } else {
+//         // ---- PERBAIKAN UTAMA ADA DI SINI ----
+//         // Pastikan productId adalah string yang valid sebelum memanggil getPropertyById
+//         if (typeof item.productId === 'string' && item.productId.length > 0) {
+//           try {
+//             const product = await getPropertyById({ id: item.productId });
+//             if (product) {
+//               return { ...item, product };
+//             }
+//             // Jika produk tidak ditemukan (misalnya, telah dihapus), abaikan item ini.
+//             console.warn(`Produk dengan ID ${item.productId} tidak ada di database.`);
+//             return null;
+//           } catch (e) {
+//             console.error(`Gagal memuat produk ID ${item.productId} untuk item keranjang ${item.$id}:`, e);
+//             return null;
+//           }
+//         } else {
+//           // Abaikan item keranjang jika tidak memiliki productId yang valid
+//           console.warn(`Item keranjang ${item.$id} tidak memiliki productId yang valid dan akan diabaikan.`);
+//           return null;
+//         }
+//       }
+//     });
+
+//     const mergedItems = (await Promise.all(mergedItemsPromises)).filter(item => item !== null);
+//     return mergedItems as any[];
+//   } catch (error: any) {
+//     console.error("Error mengambil item keranjang:", error);
+//     throw new Error(error.message || "Gagal mengambil item keranjang.");
+//   }
+// }
+
+// /**
+//  * Fungsi createOrder juga perlu diupdate untuk menangani item kustom.
+//  */
+// export const createOrder = async (userId: string, shippingAddress: string, totalAmount: number, cartItems: any[]) => {
+//   try {
+//     const newOrder = await databases.createDocument(config.databaseId!, config.ordersCollectionId!, ID.unique(), {
+//       userId,
+//       shippingAddress,
+//       totalAmount,
+//       status: 'pending',
+//     });
+
+//     const orderItemPromises = cartItems.map((item) => {
+//       return databases.createDocument(config.databaseId!, config.orderItemsCollectionId!, ID.unique(), {
+//         orderId: newOrder.$id,
+//         quantity: item.quantity,
+//         priceAtPurchase: item.product.price,
+//         productId: item.isCustom ? null : item.product.$id,
+//         productName: item.product.name,
+//         productImageUrl: item.product.image,
+//       });
+//     });
+
+//     await Promise.all(orderItemPromises);
+
+//     const itemsToDelete = cartItems.filter(item => item.$id);
+//     if (itemsToDelete.length > 0) {
+//       const deletePromises = itemsToDelete.map(item => 
+//         databases.deleteDocument(config.databaseId!, config.keranjangCollectionId!, item.$id)
+//       );
+//       await Promise.all(deletePromises);
+//     }
+
+//     return newOrder.$id;
+//   } catch (error: any) {
+//     console.error("Gagal membuat pesanan:", error);
+//     throw new Error(error.message);
+//   }
+// };
 
 export async function getAgentDashboardStats(agentId: string) {
   try {
