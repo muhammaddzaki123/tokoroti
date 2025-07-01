@@ -90,12 +90,12 @@ const EditProfile = () => {
         );
 
         const fileUrl = storage.getFileView(config.storageBucketId!, uploadedFile.$id);
-
+        
         await databases.updateDocument(
           config.databaseId!,
           config.usersProfileCollectionId!,
           user!.$id,
-          { avatar: fileUrl.toString() }
+          { avatar: fileUrl.href }
         );
         
         await refetch();
