@@ -397,3 +397,70 @@ export async function registerAsAgent(userId: string, agentData: { storeName: st
     throw new Error(error.message || "Gagal mendaftar sebagai agen.");
   }
 }
+
+export async function getAgentDashboardStats(agentId: string) {
+  try {
+    // 1. Ambil semua produk milik agen
+    const productsResponse = await databases.listDocuments(
+      config.databaseId!,
+      config.stokCollectionId!,
+      [Query.equal('agentId', agentId), Query.limit(5000)] // Ambil semua produk agen
+    );
+    const agentProducts = productsResponse.documents;
+    const totalProducts = productsResponse.total;
+    const agentProductIds = new Set(agentProducts.map(p => p.$id));
+
+    // Jika agen tidak punya produk, langsung kembalikan statistik nol
+    if (agentProductIds.size === 0) {
+      return { totalProducts: 0, pendingOrders: 0, totalSales: 0, totalOrders: 0, completedOrders: 0 };
+    }
+
+    // 2. Ambil semua item pesanan yang mengandung produk dari agen ini
+    const orderItemsResponse = await databases.listDocuments(
+      config.databaseId!,
+      config.orderItemsCollectionId!,
+      [Query.equal('productId', Array.from(agentProductIds)), Query.limit(5000)] // Filter berdasarkan produk agen
+    );
+    const agentOrderItems = orderItemsResponse.documents;
+
+    // 3. Dapatkan ID pesanan yang unik dari item-item tersebut
+    const relevantOrderIds = [...new Set(agentOrderItems.map(item => item.orderId))];
+
+    // Jika tidak ada pesanan terkait, kembalikan statistik nol untuk pesanan
+    if (relevantOrderIds.length === 0) {
+        return { totalProducts, pendingOrders: 0, totalSales: 0, totalOrders: 0, completedOrders: 0 };
+    }
+    
+    // 4. Ambil semua dokumen pesanan yang relevan
+    const ordersResponse = await databases.listDocuments(
+        config.databaseId!,
+        config.ordersCollectionId!,
+        [Query.equal('$id', relevantOrderIds), Query.limit(relevantOrderIds.length)]
+    );
+    const agentOrders = ordersResponse.documents;
+
+    // 5. Hitung statistik dari pesanan yang relevan
+    let totalSales = 0;
+
+    agentOrders.forEach(order => {
+        // Hanya hitung penjualan dari pesanan yang sudah selesai (delivered)
+        if (order.status === 'delivered') {
+            const itemsInThisOrder = agentOrderItems.filter(item => item.orderId === order.$id);
+            itemsInThisOrder.forEach(item => {
+                const price = item.priceAtPurchase * item.quantity;
+                totalSales += price;
+            });
+        }
+    });
+    
+    const totalOrders = agentOrders.length;
+    const pendingOrders = agentOrders.filter(o => o.status === 'pending').length;
+    const completedOrders = agentOrders.filter(o => o.status === 'delivered').length;
+    
+    return { totalProducts, pendingOrders, totalSales, totalOrders, completedOrders };
+
+  } catch (error) {
+    console.error("Error fetching agent dashboard stats:", error);
+    return { totalProducts: 0, pendingOrders: 0, totalSales: 0, totalOrders: 0, completedOrders: 0 };
+  }
+}

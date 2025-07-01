@@ -14,9 +14,8 @@ import {
   View,
 } from "react-native";
 
-// Komponen Item Menu yang bisa digunakan kembali (tidak ada perubahan)
 const MenuItem = ({ icon, title, onPress, isDestructive = false }: {
-  icon: any; // `any` agar bisa menerima nama ikon dari Ionicons
+  icon: any;
   title: string;
   onPress?: () => void;
   isDestructive?: boolean;
@@ -35,9 +34,7 @@ const MenuItem = ({ icon, title, onPress, isDestructive = false }: {
 const ProfileScreen = () => {
   const { user, refetch } = useGlobalContext();
 
-  // --- PERBAIKAN LOGIKA LOGOUT DI SINI ---
   const handleLogout = () => {
-    // Menampilkan dialog konfirmasi kepada pengguna
     Alert.alert(
       "Logout",
       "Apakah Anda yakin ingin keluar dari akun Anda?",
@@ -46,20 +43,12 @@ const ProfileScreen = () => {
         {
           text: "Keluar",
           style: "destructive",
-          // Menggunakan async/await di dalam `onPress`
           onPress: async () => {
             try {
-              // Memanggil fungsi logout yang sudah diperbarui (menggunakan deleteSessions)
               await logout();
-              
-              // Merefresh state global untuk menghapus data pengguna
               await refetch();
-              
-              // Mengarahkan pengguna kembali ke halaman sign-in
               router.replace('/sign-in');
-
             } catch (error: any) {
-              // Menampilkan pesan error jika logout gagal
               Alert.alert("Error", error.message || "Gagal untuk logout.");
             }
           }
