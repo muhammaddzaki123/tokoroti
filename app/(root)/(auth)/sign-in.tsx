@@ -85,13 +85,13 @@ export default function SignIn() {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.content}>
           <Image
-            source={images.logoawal}
+            source={images.logoawall}
             style={styles.logo}
             resizeMode="contain"
           />
 
           <Text style={styles.title}>Selamat Datang Kembali</Text>
-          <Text style={styles.subtitle}>Masuk untuk melanjutkan ke GumiSaQ</Text>
+          <Text style={styles.subtitle}>Masuk untuk melanjutkan ke TOTO ROTI</Text>
 
           {/* Form Inputs */}
           <View style={styles.form}>

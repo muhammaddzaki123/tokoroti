@@ -57,13 +57,13 @@ export default function SignUp() {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.content}>
           <Image
-            source={images.logoawal}
+            source={images.logoawall}
             style={styles.logo}
             resizeMode="contain"
           />
 
           <Text style={styles.title}>Buat Akun Baru</Text>
-          <Text style={styles.subtitle}>Mulai perjalanan belanja Anda di GumiSaQ</Text>
+          <Text style={styles.subtitle}>Mulai perjalanan belanja Anda di TOKO ROTI</Text>
 
           {/* Form Inputs */}
           <View style={styles.form}>

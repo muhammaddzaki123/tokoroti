@@ -1,14 +1,7 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import { account, avatars, config, databases, getCurrentUser, ID } from "./appwrite";
+import { account, avatars, config, databases, getCurrentUser } from "./appwrite";
 
-interface GlobalContextType {
-  isLogged: boolean;
-  user: User | null;
-  loading: boolean;
-  refetch: () => void;
-}
-
-// Interface User (pastikan ini cocok dengan struktur data Anda)
+// Interface User yang disesuaikan dengan data dari getCurrentUser
 interface User {
   $id: string;
   name: string;
@@ -17,7 +10,13 @@ interface User {
   userType: 'user' | 'admin' | 'agent';
   alamat: string;
   noHp: string;
-  accountId: string;
+}
+
+interface GlobalContextType {
+  isLogged: boolean;
+  user: User | null;
+  loading: boolean;
+  refetch: () => void;
 }
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
@@ -34,53 +33,21 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
   const fetchUserData = async () => {
     setLoading(true);
     try {
-      const currentAccount = await account.get();
+      // getCurrentUser sudah mengembalikan data user yang siap pakai
+      const currentUser = await getCurrentUser();
       
-      if (currentAccount) {
-        let userProfileDoc = await getCurrentUser();
-
-        // Jika profil tidak ada di database (kasus login pertama kali via OAuth)
-        if (!userProfileDoc) {
-          console.log("Profil database tidak ditemukan. Membuat profil baru...");
-          const avatarUrl = avatars.getInitials(currentAccount.name);
-          
-          userProfileDoc = await databases.createDocument(
-            config.databaseId!,
-            config.usersProfileCollectionId!,
-            currentAccount.$id,
-            {
-              accountId: currentAccount.$id,
-              email: currentAccount.email,
-              name: currentAccount.name,
-              avatar: avatarUrl.toString(),
-              userType: 'user',
-              addresses: [],
-            }
-          );
-        }
-        
+      if (currentUser) {
         // --- PERBAIKAN UTAMA DI SINI ---
-        const formattedUser: User = {
-            $id: userProfileDoc.$id,
-            accountId: userProfileDoc.accountId,
-            name: userProfileDoc.name,
-            email: userProfileDoc.email,
-            avatar: userProfileDoc.avatar,
-            userType: userProfileDoc.userType,
-            alamat: userProfileDoc.alamat,
-            noHp: userProfileDoc.noHp,
-        };
-
-        setUser(formattedUser);
+        // Tidak perlu memformat ulang, langsung gunakan data dari currentUser
+        setUser(currentUser as User);
         setIsLogged(true);
-
       } else {
-        // Tidak ada sesi aktif
+        // Tidak ada sesi pengguna yang aktif
         setUser(null);
         setIsLogged(false);
       }
     } catch (error) {
-      console.log("Tidak ada sesi pengguna aktif atau terjadi error:", error);
+      console.error("Gagal mengambil data pengguna:", error);
       setUser(null);
       setIsLogged(false);
     } finally {
@@ -89,6 +56,7 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
   };
 
   useEffect(() => {
+    // Coba ambil data pengguna saat komponen pertama kali dimuat
     fetchUserData();
   }, []);
 
@@ -98,7 +66,7 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
         isLogged,
         user,
         loading,
-        refetch: fetchUserData,
+        refetch: fetchUserData, // 'refetch' akan memanggil ulang fetchUserData
       }}
     >
       {children}
@@ -109,7 +77,7 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
 export const useGlobalContext = (): GlobalContextType => {
   const context = useContext(GlobalContext);
   if (!context)
-    throw new Error("useGlobalContext must be used within a GlobalProvider");
+    throw new Error("useGlobalContext harus digunakan di dalam GlobalProvider");
 
   return context;
 };
