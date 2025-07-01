@@ -13,8 +13,8 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { ID } from 'react-native-appwrite';
-import { config, databases, storage } from '../../lib/appwrite';
+// Pastikan ID diimpor dengan benar dari lib/appwrite
+import { ID, config, databases, storage } from '../../lib/appwrite';
 import { useGlobalContext } from '../../lib/global-provider';
 import { Product } from '../../types/product';
 
@@ -24,7 +24,7 @@ interface ProductFormProps {
   mode?: 'create' | 'edit';
 }
 
-const productTypes: Product['type'][] = ["roti", "bolu",];
+const productTypes: Product['type'][] = ["roti", "bolu"];
 
 export const ProductForm = ({ onSuccess, initialData, mode = 'create' }: ProductFormProps) => {
   const [name, setName] = useState(initialData?.name || '');
@@ -73,13 +73,33 @@ export const ProductForm = ({ onSuccess, initialData, mode = 'create' }: Product
   };
 
   const uploadImage = async (uri: string): Promise<string> => {
+      if (!config.endpoint || !config.projectId || !config.storageBucketId) {
+          throw new Error("Konfigurasi Appwrite tidak lengkap.");
+      }
+      
       const response = await fetch(uri);
       const blob = await response.blob();
-      const fileExtension = getSafeFileExtension(blob.type);
+      const fileExtension = getSafeFileExtension(blob.type || 'image/jpeg');
       const fileName = `product_${Date.now()}.${fileExtension}`;
-      const file = { name: fileName, type: blob.type, size: blob.size, uri };
-      const uploadedFile = await storage.createFile(config.storageBucketId!, ID.unique(), file);
-      return storage.getFileView(config.storageBucketId!, uploadedFile.$id).href;
+      
+      const file = {
+        name: fileName,
+        type: blob.type,
+        size: blob.size,
+        uri: uri
+      };
+
+      // 1. Unggah file
+      const uploadedFile = await storage.createFile(
+          config.storageBucketId,
+          ID.unique(),
+          file
+      );
+
+      // 2. Buat URL secara manual (Solusi Paling Andal)
+      const fileUrl = `${config.endpoint}/storage/buckets/${config.storageBucketId}/files/${uploadedFile.$id}/view?project=${config.projectId}`;
+      
+      return fileUrl;
   };
 
   const handleSubmit = async () => {
@@ -137,7 +157,7 @@ export const ProductForm = ({ onSuccess, initialData, mode = 'create' }: Product
       {/* --- FORM FIELDS --- */}
       <View style={styles.fieldGroup}>
         <Text style={styles.label}>Nama Produk *</Text>
-        <TextInput style={styles.input} placeholder="Contoh: Kaos Sasak Modern" value={name} onChangeText={setName} />
+        <TextInput style={styles.input} placeholder="Contoh: Roti Sobek Coklat" value={name} onChangeText={setName} />
       </View>
 
       <View style={styles.fieldGroup}>
@@ -154,7 +174,7 @@ export const ProductForm = ({ onSuccess, initialData, mode = 'create' }: Product
 
       <View style={styles.fieldGroup}>
         <Text style={styles.label}>Harga (Rp) *</Text>
-        <TextInput style={styles.input} placeholder="Contoh: 120000" value={price} onChangeText={setPrice} keyboardType="numeric" />
+        <TextInput style={styles.input} placeholder="Contoh: 15000" value={price} onChangeText={setPrice} keyboardType="numeric" />
       </View>
 
       <View style={styles.fieldGroup}>
@@ -209,7 +229,7 @@ export const ProductForm = ({ onSuccess, initialData, mode = 'create' }: Product
   );
 };
 
-// --- STYLESHEET UNTUK TAMPILAN MODERN ---
+// --- STYLESHEET ---
 const styles = StyleSheet.create({
     formContainer: {
         padding: 16,
@@ -245,7 +265,6 @@ const styles = StyleSheet.create({
         borderRadius: 12,
     },
     picker: {
-        // Styling untuk picker mungkin terbatas, tetapi container membantu
     },
     imagePicker: {
         borderWidth: 2,
