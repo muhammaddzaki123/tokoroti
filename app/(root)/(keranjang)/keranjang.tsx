@@ -122,7 +122,6 @@ const KeranjangScreen = () => {
   if (!user) {
     return (
       <SafeAreaView style={styles.fullCenter}>
-        <Image source={require('@/assets/images/noResult.jpg')} style={styles.emptyImage} resizeMode="contain" />
         <Text style={styles.emptyTitle}>Anda Belum Masuk</Text>
         <Text style={styles.emptySubtitle}>Masuk untuk melihat keranjang belanja Anda.</Text>
         <TouchableOpacity onPress={() => router.push('/sign-in')} style={styles.primaryButton}>
@@ -146,7 +145,6 @@ const KeranjangScreen = () => {
         <View style={styles.fullCenter}><ActivityIndicator size="large" color="#526346" /></View>
       ) : cartItems && cartItems.length === 0 ? (
         <View style={styles.fullCenter}>
-          <Image source={require('@/assets/images/noResult.jpg')} style={styles.emptyImage} resizeMode="contain" />
           <Text style={styles.emptyTitle}>Keranjang Anda Kosong</Text>
           <Text style={styles.emptySubtitle}>Ayo, isi dengan produk-produk menarik!</Text>
           <TouchableOpacity onPress={() => router.push('/')} style={styles.primaryButton}>

@@ -38,7 +38,7 @@ const AboutScreen = () => {
           <View style={styles.descriptionContainer}>
             {/* --- KONTEN BARU DARI ANDA --- */}
             <Text style={styles.descriptionText}>
-              GumiSaq adalah aplikasi mobile interaktif yang dirancang sebagai media edukasi budaya Suku Sasak melalui integrasi antara fashion kasual, Augmented Reality (AR), dan platform digital. Aplikasi ini mendukung produk clothing line GumiSaq berupa kaos bergambar budaya lokal, yang dapat dipindai menggunakan fitur QR-Code atau AR Scanner untuk menampilkan informasi budaya secara visual dan interaktif.
+              TOKO ROTI PUNYA CERITA TOKO ROOTI INI ADALAH TPOKO YANG DIBUAT UNTUK SERTIFIKASI
             </Text>
           </View>
         </View>

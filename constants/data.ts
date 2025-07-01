@@ -3,28 +3,28 @@ import images from "./images";
 
 export const cards = [
   {
-    title: "Baju ovi",
+    title: "roti ovi",
     location: "Lombok",
     price: "Rp.1000.000",
     rating: 4.8,
-    category: "baju",
-    image: images.baju,
+    category: "roti",
+    image: images.roti,
   },
   {
-    title: "Baju Abdi",
+    title: "roti Abdi",
     location: "Location 2",
     price: "Rp.1000.000",
     rating: 3,
-    category: "baju",
-    image: images.baju,
+    category: "roti",
+    image: images.roti,
   },
   {
-    title: "Baju ario",
+    title: "roti ario",
     location: "lotim",
     price: "Rp.1000.000",
     rating: 2,
-    category: "baju",
-    image: images.baju,
+    category: "roti",
+    image: images.roti,
   },
   {
     title: "Card 4",
@@ -32,7 +32,7 @@ export const cards = [
     price: "Rp.1000.000",
     rating: 5,
     category: "sofenir",
-    image: images.baju,
+    image: images.roti,
   },
 ];
 
@@ -42,7 +42,7 @@ export const featuredCards = [
     location: "Location 1",
     price: "$100",
     rating: 4.8,
-    image: images.baju,
+    image: images.roti,
     category: "sofenir",
   },
   {
@@ -50,14 +50,14 @@ export const featuredCards = [
     location: "Location 2",
     price: "$200",
     rating: 3,
-    image: images.baju,
+    image: images.roti,
     category: "sofenir",
   },
 ];
 
 export const categories = [
   { title: "All", category: "All" },
-  { title: "Baju", category: "Baju" },
+  { title: "roti", category: "roti" },
   { title: "Celana", category: "Celana" },
   { title: "Tote Bag", category: "Tas" },
   { title: "Sofenir", category: "Sofenir" },

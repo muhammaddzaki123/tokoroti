@@ -4,7 +4,7 @@ import { ScrollView, Text, TouchableOpacity, View, StyleSheet, ActivityIndicator
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
-import { useGlobalContext } from '../../../lib/global-provider';
+import { useGlobalContext } from '@/lib/global-provider';
 import { useAppwrite } from '@/lib/useAppwrite';
 import { getAgentDashboardStats } from '@/lib/appwrite';
 

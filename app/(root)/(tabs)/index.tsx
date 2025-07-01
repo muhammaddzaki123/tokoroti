@@ -48,22 +48,18 @@ const Home = () => {
   const { user } = useGlobalContext();
   const params = useLocalSearchParams<{ query?: string; filter?: string }>();
   
-  // Ambil nilai query dan filter dari parameter URL
   const query = params.query || "";
   const filter = params.filter || "All";
 
-  // --- PERBAIKAN UTAMA: Satu sumber data ---
-  // Hook ini sekarang bertanggung jawab untuk semua pengambilan data produk
+
   const { data: properties, loading: propertiesLoading, refetch } = useAppwrite({
-    fn: () => getProperties({ query, filter }), // Kirim query dan filter
-    // `skip` tidak lagi diperlukan karena `useEffect` akan menangani pembaruan
+    fn: () => getProperties({ query, filter }),
   });
 
   const { data: latestProperties, loading: latestLoading, refetch: refetchLatest } = useAppwrite({
     fn: getLatestProperties,
   });
 
-  // useEffect ini akan dijalankan setiap kali query atau filter berubah
   useEffect(() => {
     refetch();
   }, [query, filter]);
@@ -72,7 +68,7 @@ const Home = () => {
   const onRefresh = async () => {
     setRefreshing(true);
     await refetchLatest();
-    await refetch(); // Refresh data utama
+    await refetch(); 
     setRefreshing(false);
   };
 
@@ -99,7 +95,6 @@ const Home = () => {
           <>
             <HomeHeader user={user} query={query} />
             
-            {/* Sembunyikan konten lain saat ada pencarian atau filter aktif */}
             {!query && filter === "All" && (
               <View style={styles.section}>
                 <View style={styles.sectionHeader}>
